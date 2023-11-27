@@ -24,4 +24,4 @@ Xem chi tiết từng đơn hàng.
 Sửa thông tin sản phẩm.
 Thêm sản phẩm mới.
 Xem doanh thu.
-## Link Notion :https://www.notion.so/WEB-B-N-QU-N-O-V-PH-KI-N-61ba6f29142e436586902a7ff49e1c78
+**Link Notion :https://www.notion.so/WEB-B-N-QU-N-O-V-PH-KI-N-61ba6f29142e436586902a7ff49e1c78**
