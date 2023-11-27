@@ -23,5 +23,5 @@ Thêm số lượng sản phẩm có sẵn.
 Xem chi tiết từng đơn hàng.
 Sửa thông tin sản phẩm.
 Thêm sản phẩm mới.
-Xem doanh thu.*
+Xem doanh thu.
 ## Link Notion :https://www.notion.so/WEB-B-N-QU-N-O-V-PH-KI-N-61ba6f29142e436586902a7ff49e1c78
