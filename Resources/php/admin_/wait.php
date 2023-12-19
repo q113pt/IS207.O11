@@ -168,11 +168,14 @@ $all_order = mysqli_query($conn, $sql);
                                                     break;
                                             }
                                             if ($conn->query($sql1) === TRUE) {
-                                                echo "Record updated successfully";
+                                                // echo "Record updated successfully";
                                               } else {
-                                                echo "Error updating record: " . $conn->error;
+                                                // echo "Error updating record: " . $conn->error;
                                               }
-                                        } else echo "loi roi";
+                                              echo "<meta http-equiv='refresh' content='0'>";
+                                        } else {
+                                            // echo "loi roi";
+                                        }
                                         }
                                         ?>
                                     </tbody>
@@ -185,7 +188,10 @@ $all_order = mysqli_query($conn, $sql);
 
 
             <?php
-            $totalRows = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM  `order_details` WHERE `address` LIKE '%$searchTerm%'"));
+            $totalRows = mysqli_num_rows(mysqli_query($conn, "SELECT * 
+                                                            FROM orders LEFT JOIN order_details ON orders.id = order_details.order_id
+                                                            WHERE (orders.id LIKE '%$searchTerm%' OR name LIKE '%$searchTerm%' OR address LIKE '%$searchTerm%' OR phone = '$searchTerm') AND shipping_status = 'Chờ xác nhận'
+                                                            LIMIT $perRow, $rowsPerPage;"));
             $totalPage = ceil($totalRows / $rowsPerPage);
             $listPage = '';
             for ($i = 1; $i <= $totalPage; $i++) {

@@ -3,17 +3,7 @@ session_start();
 include("config.php");
 include_once './components/header.php';
 
-// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_quantity'])) {
-//   $product_id = $_POST['product_id'];
-//   $new_quantity = $_POST['new_quantity'];
 
-//   foreach ($_SESSION['shopping_cart'] as &$item) {
-//     if ($item['product_id'] === $product_id) {
-//       $item['quantity'] = $new_quantity;
-//       break;
-//     }
-//   }
-// }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
   $product_id = $_POST['product_id'];
@@ -25,44 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
 }
 ;
 
-echo '<script>
-function updateCartItemQuantity(productId, quantity) {
-  $.ajax({
-    url: "./services/update_cart_item_quantity.php",
-    method: "POST",
-    data: {
-      product_id: productId,
-      quantity: quantity
-    },
-    success: function(response) {
-      console.log(response);
-      var responseData = response;
-      var responseData = JSON.parse(response);
-      
-      function formatCurrency(amount) {
-        var formattedAmount = amount.toLocaleString("vi-VN", {
-          style: "currency",
-          currency: "VND"
-        });
-
-        return formattedAmount;
-      }
-
-      var formattedTotalPrice = formatCurrency(responseData.newTotalPrice);
-
-      console.log(formattedTotalPrice);
-      if (responseData.hasOwnProperty("newTotalPrice")) {
-        console.log("--------------" + responseData.newTotalPrice);
-        $("#total_price_vnd").text(formattedTotalPrice);
-      }
-      console.log(response);
-    },
-    error: function(xhr, status, error) {
-      console.log(error);
-    }
-  });
-}
-</script>';
 
 if (isset($_SESSION['shopping_cart']) && count($_SESSION['shopping_cart']) > 0) {
   echo '
@@ -79,6 +31,16 @@ if (isset($_SESSION['shopping_cart']) && count($_SESSION['shopping_cart']) > 0) 
   // if (isset($_SESSION['shopping_cart'])) {
   $total_price = 0;
   foreach ($_SESSION['shopping_cart'] as $productID => $product) {
+    // Lấy số lượng hàng của sản phẩm từ bảng product
+    $query = "SELECT quantity FROM product WHERE Id = ".$product['product_id'];
+    $result = mysqli_query($con, $query);        
+    $row = mysqli_fetch_assoc($result);
+    $currentQuantity = $row['quantity']; 
+      // Kiểm tra nếu số lượng bằng 0, hiển thị alert và xoá sản phẩm
+      if ($currentQuantity == 0) {
+        unset($_SESSION['shopping_cart'][$productID]);
+        echo "<script>alert('Sản phẩm " . $product['product_name'] . " đã hết hàng.'); location.reload()</script>";
+    }
     $total_price += ($product['product_price'] * $product['quantity']);
     $product_price_vnd = number_format($product['product_price'] / 1, 0, ',', '.') . ' đ';
     echo '<li class="flex py-6 border-slate-200 dark:!border-gray-500">
@@ -104,8 +66,27 @@ if (isset($_SESSION['shopping_cart']) && count($_SESSION['shopping_cart']) > 0) 
         </div>
 
         <div class="mt-4 flex flex-1 items-end justify-between">
-          <div>
-            <input class="appearance-none border border-slate-300 rounded-md shadow-sm checked:bg-sky-500 checked:text-sky-500 disabled:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed focus:border-sky-500 focus:ring-sky-500 dark:border-white/10 dark:bg-gray-800 dark:focus:border-sky-500 dark:focus:ring-sky-500 dark:text-slate-50 dark:focus:ring-offset-slate-900 dark:checked:bg-sky-500 w-16 no-spinners text-center sm:text-sm" type="number" min="1" name="quantity" value="' . $product['quantity'] . '" id="quantity" onchange="updateCartItemQuantity(' . $product['product_id'] . ', this.value)">
+        <div>
+        <div id="quantity-error_' . $product['product_id'] . '" style="color: orange;"></div>
+            <input class="appearance-none border border-slate-300 rounded-md shadow-sm checked:bg-sky-500 checked:text-sky-500 disabled:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed focus:border-sky-500 focus:ring-sky-500 dark:border-white/10 dark:bg-gray-800 dark:focus:border-sky-500 dark:focus:ring-sky-500 dark:text-slate-50 dark:focus:ring-offset-slate-900 dark:checked:bg-sky-500 w-16 no-spinners text-center sm:text-sm" type="number" min="1" max="'.$currentQuantity.'" name="quantity" value="' . $product['quantity'] . '" id="quantity" oninput="validateQuantity(' . $product['product_id'] . ', this)" onchange="updateCartItemQuantity(' . $product['product_id'] . ', this.value)">
+            
+            <script>
+            function validateQuantity(productId, input) {
+              var quantity = input.value;
+              var currentQuantity = '.$currentQuantity.';
+              var errorDiv = document.getElementById("quantity-error_" + productId);
+          
+              if (quantity <= 0) {
+                  errorDiv.innerText = "Số lượng phải lớn hơn 0";
+                  input.value = 1; 
+              } else if (quantity > currentQuantity) {
+                  errorDiv.innerText = "Chỉ còn " + currentQuantity + " sản phẩm";
+                  input.value = currentQuantity; 
+              } else {
+                  errorDiv.innerText = "";
+              }
+          }
+          </script>
           </div>
           <div class="ml-4">
             <form action="" method="post">
@@ -183,12 +164,9 @@ if (isset($_SESSION['shopping_cart']) && count($_SESSION['shopping_cart']) > 0) 
 </main>';
 }
 
-echo '';
 include_once './components/footer.php';
 $con->close();
 ?>
-<!-- <script src="../JS/tailwind.config.js"></script>
-<script src="../JS/app.js"></script> -->
 <script>
   $(document).ready(function(){
     $("#btn_muahang").click(function(){

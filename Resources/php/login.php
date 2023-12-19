@@ -20,7 +20,7 @@ session_start();
             if (isset($_POST['submit'])) {
                 $email = mysqli_real_escape_string($con, $_POST['email']);
                 $password = mysqli_real_escape_string($con, $_POST['password']);
-                $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+                //$hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
                 $result = mysqli_query($con, "SELECT * FROM customer WHERE Email='$email'") or die("Select Error");
                 $row = mysqli_fetch_assoc($result);

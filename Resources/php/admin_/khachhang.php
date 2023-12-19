@@ -19,12 +19,24 @@ $perRow = $page * $rowsPerPage - $rowsPerPage;
 $searchTerm = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
 $searchTerm = trim($searchTerm);
 
-$sql = "SELECT customer.Username AS customer_name, customer.Email, COUNT(orders.id) AS num_orders, SUM(orders.total_amount) AS total_amount
-        FROM customer
-        LEFT JOIN orders ON customer.id = orders.user_id
-        WHERE customer.Username LIKE '%$searchTerm%'
-        GROUP BY customer.id
+if(empty($searchTerm)){
+    $sql = "SELECT order_details.name, customer.Email, count(order_id) AS SLDHDD, sum(orders.total_amount) AS Tong
+        FROM order_details 
+        JOIN orders ON orders.order_number = order_details.order_id
+        JOIN customer ON order_details.name = customer.Username
+        GROUP BY order_details.name
         LIMIT $perRow, $rowsPerPage";
+}else{
+    $sql = "SELECT order_details.name, customer.Email, count(order_id) AS SLDHDD, sum(orders.total_amount) AS Tong
+        FROM order_details 
+        JOIN orders ON orders.order_number = order_details.order_id
+        JOIN customer ON order_details.name = customer.Username
+        WHERE order_details.name LIKE '%$searchTerm%' OR customer.Email LIKE '%$searchTerm%'
+        GROUP BY order_details.name
+        LIMIT $perRow, $rowsPerPage";
+}
+
+
 
 $query = mysqli_query($conn, $sql);
 ?>
@@ -32,7 +44,7 @@ $query = mysqli_query($conn, $sql);
 
 
 
-<main class="py-10 dark:bg-slate-800 dark:ring-white/10 dark:shadow-inner">
+<main class="py-10 dark:bg-slate-900 dark:ring-white/10 dark:shadow-inner">
     <div>
         <div class="px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
             <div class="min-w-0 flex-1">
@@ -100,14 +112,14 @@ $query = mysqli_query($conn, $sql);
                                                 <td class="relative w-12 px-6 sm:w-16 sm:px-8">
                                                     <input class="appearance-none border border-slate-300 rounded-md shadow-sm checked:bg-sky-500 checked:text-sky-500 disabled:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed focus:border-sky-500 focus:ring-sky-500 dark:border-white/10 dark:bg-white/5 dark:focus:border-sky-500 dark:focus:ring-sky-500 dark:text-slate-300 dark:focus:ring-offset-slate-900 dark:checked:bg-sky-500 absolute left-4 top-1/2 -mt-2 h-4 w-4 !rounded !shadow-none sm:left-6" type="hidden" value="20">
                                                     <span>
-                                                        <?php echo $row['customer_name']; ?>
+                                                        <?php echo $row['name']; ?>
                                                     </span>
                                                 </td>
                                                 </td>
                                                 <td class="relative px-3 py-4 font-medium text-sm text-slate-900 text-left whitespace-nowrap dark:text-slate-200">
                                                     <div class="">
                                                         <!-- <a href="quantri.php?page_layout=khachhang&Id=<?php echo $row['Id']; ?>" class="inline-flex items-center truncate hover:text-sky-600 dark:hover:text-sky-400"> -->
-                                                        <a href="quantri.php?page_layout=khachhang ?>" class="inline-flex items-center truncate hover:text-sky-600 dark:hover:text-sky-400">
+                                                        <a href="#0" class="inline-flex items-center truncate hover:text-sky-600 dark:hover:text-sky-400">
                                                             <span>
                                                                 <?php echo $row['Email']; ?>
                                                             </span>
@@ -116,11 +128,11 @@ $query = mysqli_query($conn, $sql);
                                                 </td>
                                                 <td class="relative px-3 py-4 text-sm text-slate-500 text-center whitespace-nowrap dark:text-slate-400">
                                                     <span class="inline-flex items-center rounded-full font-medium bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20 text-xs px-2 py-1">
-                                                        <?php echo $row['num_orders']; ?>
+                                                        <?php echo $row['SLDHDD']; ?>
                                                     </span>
                                                 </td>
                                                 <td class="pl-3 pr-4 py-4 text-right text-sm text-slate-500 whitespace-nowrap sm:pr-6 dark:text-slate-400">
-                                                    <?php echo $row['total_amount']; ?> đ
+                                                    <?php echo $row['Tong']; ?> đ
                                                 </td>
 
 

@@ -1,13 +1,15 @@
 <?php
+ob_start();
 session_start();
 include_once("config.php");
 include_once './components/header.php';
 
-// $isLoggedIn = isset($_SESSION['user_id']);
-// if (!$isLoggedIn) {
-//     header("Location: login.php");
-//     exit;
-// }
+$isLoggedIn = isset($_SESSION['valid']);
+if (!$isLoggedIn) {
+    header("Location: login.php?passToCart=1");
+    exit;
+}
+ob_end_flush();
 
 if (isset($_SESSION['new_order_id'])) {
     $orderId = $_SESSION['new_order_id'];
@@ -30,9 +32,6 @@ if (isset($_SESSION['new_order_id'])) {
         $orderDetailsResult = $con->query($orderDetailsQuery);
         $OrDetail = $orderDetailsResult->fetch_assoc();
 
-        ?>
-
-        <?php
         echo '<main class="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24 sm:pb-60 lg:px-8">
 <div class="max-w-3xl">
     <h1 class="mt-2 text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50 sm:text-4xl">
@@ -87,24 +86,7 @@ if (isset($_SESSION['new_order_id'])) {
                                                                         <ul class="mt-2 space-x-2 divide-x divide-slate-200 text-slate-700">
                                                                                         </ul>
                                                                 </div>
-                        <div class="hidden mt-2 sm:flex">
-                            <div class="flex items-center space-x-4 divide-x divide-slate-200 text-sm font-medium">
-                                <div class="flex flex-1 justify-center">
-                                    <a href="https://" class="btn btn-link whitespace-nowrap">
-                                        Xem sản phẩm
-                                    </a>
-                                </div>
-                            </div>
-                                                                </div>
-                    </div>
-                </div>
-                <div class="mt-6 sm:hidden">
-                    <div class="mt-6 flex items-center space-x-4 divide-x divide-slate-200 border-t border-slate-200 dark:!border-gray-500  pt-4 text-sm font-medium">
-                        <div class="flex flex-1 justify-center">
-                            <a href="https://" class="btn btn-link whitespace-nowrap">
-                                Xem sản phẩm
-                            </a>
-                        </div>
+
                     </div>
                 </div>
             </li>';
@@ -177,9 +159,5 @@ if (isset($_SESSION['new_order_id'])) {
     echo "Không có ID đơn hàng mới.";
 }
 
-// echo '
-// ';
 require_once('./components/footer.php');
 ?>
-<!-- <script src="../JS/tailwind.config.js"></script>
-<script src="../JS/app.js"></script> -->

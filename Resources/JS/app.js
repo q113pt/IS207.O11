@@ -1,8 +1,8 @@
 
-function showCartToast(product_name) {
+function showCartToast(message) {
   var toastBody = $("#cartToast .toast-body");
 
-  toastBody.text("Đã thêm sản phẩm vào giỏ hàng.");
+  toastBody.text(message);
 
   $("#cartToast").toast({
     delay: 2000
@@ -21,7 +21,12 @@ function addToCart(product_id, product_name, product_image_link, product_price) 
     },
     success: function (response) {
       console.log('success')
-      showCartToast(product_name);
+      if (response.startsWith("Sản phẩm đã được thêm vào giỏ hàng!")) {
+        showCartToast("Đã thêm sản phẩm vào giỏ hàng.");
+      } else {
+        // alert(response); 
+        showCartToast(response)
+      }
     },
     error: function (xhr, status, error) {
       console.error("AJAX request failed:", status, error);
@@ -29,6 +34,42 @@ function addToCart(product_id, product_name, product_image_link, product_price) 
   });
 }
 
+function updateCartItemQuantity(productId, quantity) {
+  $.ajax({
+    url: "./services/update_cart_item_quantity.php",
+    method: "POST",
+    data: {
+      product_id: productId,
+      quantity: quantity
+    },
+    success: function(response) {
+      console.log(response);
+      var responseData = response;
+      var responseData = JSON.parse(response);
+      
+      function formatCurrency(amount) {
+        var formattedAmount = amount.toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND"
+        });
+
+        return formattedAmount;
+      }
+
+      var formattedTotalPrice = formatCurrency(responseData.newTotalPrice);
+
+      console.log(formattedTotalPrice);
+      if (responseData.hasOwnProperty("newTotalPrice")) {
+        console.log("--------------" + responseData.newTotalPrice);
+        $("#total_price_vnd").text(formattedTotalPrice);
+      }
+      console.log(response);
+    },
+    error: function(xhr, status, error) {
+      console.log(error);
+    }
+  });
+}
 
 function addAddress() {
   var cities = $("#shipping-city");
@@ -84,7 +125,6 @@ function addAddress() {
 }
 
 
-// document ready jquery
 $(document).ready(function () {
   var themeToggleDarkIcon = $(
     "#theme-toggle-dark-icon"
@@ -130,9 +170,6 @@ $(document).ready(function () {
     }
   });
 
-
-
-
   $("#logOutBtn").on("click", function () {
     $.ajax({
       type: "GET",
@@ -150,8 +187,6 @@ $(document).ready(function () {
     });
   });
 
-
-
   let searchBar = document.querySelector('.searchBar');
   let currentPage = window.location.pathname;
   let excludedPages = ['/cart.php', '/checkout.php', '/process_checkout.php'];
@@ -162,7 +197,7 @@ $(document).ready(function () {
   }
 
 });
-// ready end
+
 
 function sortPL(loaiSP, sortOption) {
   var selectedValue = sortOption;
@@ -182,36 +217,29 @@ function sortPL(loaiSP, sortOption) {
     }
   });
 }
+
 function sortIndex(sortOption) {
-  // Lấy giá trị đã chọn
   var selectedValue = sortOption;
   var keyword = $("#input").val().trim();
   console.log(selectedValue, '  --  - - ', keyword);
-  // Gửi yêu cầu AJAX để lấy dữ liệu được sắp xếp
   $.ajax({
-    url: "./sort.php", // Đường dẫn đến file xử lý sắp xếp
+    url: "./sort.php", 
     method: "POST",
     data: { sortOption: selectedValue, category: keyword },
     success: function (data) {
-      // Cập nhật nội dung trang với kết quả sắp xếp
       $("#content").html(data);
     }
   });
 }
 
 function search() {
-  // Lấy giá trị đã chọn
   let selectedValue = $(".products-container .sort select").val();
   var keyword = $("#input").val().trim();
-  // Gửi yêu cầu AJAX để tìm kiếm sản phẩm
   $.ajax({
-    // url: "./filter.php", // Đường dẫn đến file xử lý tìm kiếm
-    url: "./sort.php", // Đường dẫn đến file xử lý tìm kiếm
+    url: "./sort.php",
     method: "POST",
-    // data: { category: keyword },
     data: { sortOption: selectedValue, category: keyword },
     success: function (data) {
-      // Cập nhật nội dung trang với kết quả tìm kiếm
       $("#content").html(data);
     }
   });

@@ -25,7 +25,7 @@ $all_order = mysqli_query($conn, $sql);
 //include_once '../components/admin_header.php';
 ?>
 
-<main class="py-10 dark:bg-slate-800 dark:ring-white/10 dark:shadow-inner">
+<main class="py-10 dark:bg-slate-900 dark:ring-white/10 dark:shadow-inner">
     <div>
         <div class="px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 ">
             <div class="min-w-0 flex-1">
@@ -151,7 +151,10 @@ $all_order = mysqli_query($conn, $sql);
 
 
             <?php
-            $totalRows = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM  `order_details` WHERE `address` LIKE '%$searchTerm%'"));
+            $totalRows = mysqli_num_rows(mysqli_query($conn, "SELECT * 
+                                                            FROM orders LEFT JOIN order_details ON orders.id = order_details.order_id
+                                                            WHERE orders.id LIKE '%$searchTerm%' OR name LIKE '%$searchTerm%' OR address LIKE '%$searchTerm%' OR phone = '$searchTerm' 
+                                                            LIMIT $perRow, $rowsPerPage;"));
             $totalPage = ceil($totalRows / $rowsPerPage);
             $listPage = '';
             for ($i = 1; $i <= $totalPage; $i++) {

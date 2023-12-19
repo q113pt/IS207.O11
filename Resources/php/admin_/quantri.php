@@ -10,7 +10,6 @@ include_once('ketnoi.php');
 ?>
 
 <html lang="en" class="h-full">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,55 +23,13 @@ include_once('ketnoi.php');
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
 
-
-    <link rel="stylesheet" href="style.css">
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-
-<!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- <script src="tailwind.config.js"></script> -->
-    <!-- <script src="app.js"></script> -->
-    <script>
-        $(document).ready(function () {
-  var themeToggleDarkIcon = $("#theme-toggle-dark-icon");
-  var themeToggleLightIcon = $("#theme-toggle-light-icon");
-  var themeToggleBtn = $("#theme-toggle");
-
-  function setInitialTheme() {
-    var currentTheme = localStorage.getItem("color-theme");
-
-    if (currentTheme === "dark" || (!currentTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-      $("html").addClass("dark");
-      themeToggleLightIcon.removeClass("hidden");
-    } else {
-      themeToggleDarkIcon.removeClass("hidden");
-    }
-  }
-
-  setInitialTheme();
-
-  function toggleTheme() {
-    themeToggleDarkIcon.toggleClass("hidden");
-    themeToggleLightIcon.toggleClass("hidden");
-
-    var currentTheme = localStorage.getItem("color-theme");
-
-    if (currentTheme === "light") {
-      $("html").addClass("dark");
-      localStorage.setItem("color-theme", "dark");
-    } else {
-      $("html").removeClass("dark");
-      localStorage.setItem("color-theme", "light");
-    }
-  }
-
-  themeToggleBtn.on("click", toggleTheme);
-});
-    </script>
+    <link rel="stylesheet" href="../../CSS/admin_style.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="../../JS/admin_app.js"></script>
 </head>
 
 <body id="main" class="antialiased font-sans h-full bg-white dark:bg-slate-900">
-    <div>
+    <div class = "w-full h-full bg-white dark:bg-slate-900">
         <div id="toggleNav" class="relative z-50 lg:hidden" role="dialog" aria-modal="true" style="display: none;">
             <div></div>
 
@@ -213,7 +170,7 @@ include_once('ketnoi.php');
         </div>
 
         <div class="lg:pl-72">
-            <div class="lg:mx-auto lg:max-w-7xl lg:px-8 dark:bg-slate-800 dark:ring-white/10 dark:shadow-inner ">
+            <div class="lg:mx-auto lg:max-w-7x2 lg:px-10 dark:bg-slate-800 dark:ring-white/10 dark:shadow-inner ">
                 <div class="flex h-16 items-center gap-x-4 border-b border-slate-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:bg-slate-900 dark:border-white/10">
                     <button id='toggleBtn' onclick='document.querySelector("#toggleNav").style.display=document.querySelector("#toggleNav").style.display?"":"none"' type="button" class="-m-2.5 p-2.5 text-slate-700 lg:hidden dark:text-slate-400">
                         <span class="sr-only">Open sidebar</span>
@@ -281,9 +238,6 @@ include_once('ketnoi.php');
                                     </button>
                                 <div class="absolute z-50 my-2 w-48 rounded-md shadow-lg origin-top-right right-0 top-full" id="menuContent" style="display: none;">
                                     <div class="rounded-md ring-1 ring-slate-900/10 dark:ring-white/5 py-1 bg-white dark:bg-slate-800">
-                                        <a class="block px-4 py-2 text-sm leading-5 text-slate-700 hover:bg-slate-100 focus:outline-none focus:bg-slate-100 dark:text-slate-200 dark:focus:bg-slate-900/40 dark:hover:bg-slate-900/40" href="#profile">
-                                            Đổi mật khẩu
-                                        </a>
                                         <hr class="border-slate-200 dark:border-white/10">
                                         <div class="relative cursor-pointer block px-4 py-2 text-sm leading-5 text-slate-700 hover:bg-slate-100 focus:outline-none focus:bg-slate-100 transition duration-150 ease-in-out dark:text-slate-200 dark:focus:bg-slate-900/40 dark:hover:bg-slate-900/40">
                                             <div>
